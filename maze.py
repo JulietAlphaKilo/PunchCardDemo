@@ -14,10 +14,10 @@ class Maze:
         self.row_move = {self.up: -1, self.down: 1, self.left: 0, self.right: 0}
         self.col_move = {self.up: 0, self.down: 0, self.left: -1, self.right: 1}
         # Initialise randomly generated path through the maze
-        self.maze_map = self.generate_path(np.zeros((side_length, side_length), dtype=int), self.start_row, self.start_col)
-        self.end_row, self.end_col = self.find_finish_cell()
+        self.maze_map = self._generate_path(np.zeros((side_length, side_length), dtype=int), self.start_row, self.start_col)
+        self.end_row, self.end_col = self._find_finish_cell()
 
-    def generate_path(self, map, current_row, current_col):
+    def _generate_path(self, map, current_row, current_col):
         """
         Randomly generates a square maze using a Recursive Backtracking algorithm. Returns the maze as an ndarray.
         :param map: current layout of the map as a numpy array.
@@ -42,11 +42,11 @@ class Maze:
             if 0 <= new_row < np.shape(map)[0] and 0 <= new_col < np.shape(map)[1] and map[new_row][new_col] == 0:
                 map[current_row][current_col] |= direction
                 map[new_row][new_col] |= self.opposite_directions[direction]
-                map = self.generate_path(map, new_row, new_col)
+                map = self._generate_path(map, new_row, new_col)
 
         return map
 
-    def find_finish_cell(self):
+    def _find_finish_cell(self):
         """
         Finds the row and column indices for the end of the longest path in the maze using a breadth-first search.
         :return : Row and column indices for the final cell visited in the search.
@@ -76,6 +76,9 @@ class Maze:
                 if self.maze_map[current_row][current_col] & direction != 0 and not visited[current_row + self.row_move[direction]][current_col + self.col_move[direction]]:
                     to_check.put((current_row + self.row_move[direction], current_col + self.col_move[direction]))
         return current_row, current_col
+
+    def get_map(self):
+        return self.maze_map
 
     def traverse(self, user_directions):
         current_row = self.start_row
