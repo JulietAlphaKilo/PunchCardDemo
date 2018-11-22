@@ -23,7 +23,8 @@ class Maze:
         :param map: current layout of the map as a numpy array.
         :param current_row: Row index for first cell in the maze (default is 0)
         :param current_col: Column index for first cell in the maze(default is 0)
-        :return maze: maze as a 2D ndarray. The value of each datapoint corresponds to what paths are possible in that cell
+        :return maze: maze as a 2D ndarray. The value of each datapoint corresponds to what paths are possible in that
+        cell.
         relative to the starting point. To create a new maze, this should be a zero matrix).
         """
         # Randomise directions order to remove bias when plotting a route.
@@ -80,16 +81,23 @@ class Maze:
     def get_map(self):
         return self.maze_map
 
-    def traverse(self, user_directions):
+    def traverse_by_cells(self, user_directions):
+        """
+        Takes a list of instructions and checks whether these lead to the end point of the maze. Each instruction in the
+        list corresponds to a movement over one cell. This approach is fine for smaller mazes, but becomes more unweildy
+        as the number of steps grows.
+        :param user_directions: Accepted directions: 'u', 'd', 'l', 'r'.
+        :return: True if the end of the maze is reached, otherwise False.
+        """
         current_row = self.start_row
         current_col = self.start_col
-        encode_directions = {'up': self.up, 'down': self.down, 'left': self.left, 'right': self.right}
+        encode_directions = {'u': self.up, 'd': self.down, 'l': self.left, 'r': self.right}
         for step in user_directions:
             step = step.lower()
             try:
                 direction = encode_directions[step]
             except KeyError:
-                print('\"%s\" not a valid direction - should be either \"up\", \"down\", \"left\", or \"right\"' % step)
+                print('\"%s\" not a valid direction - should be either \"u\", \"d\", \"l\", or \"r\"' % step)
                 return False
 
             poss_row = current_row + self.row_move[direction]
@@ -106,6 +114,25 @@ class Maze:
             return True
         else:
             return False
+
+    def traverse_by_blocks(self, user_directions):
+        """
+        Takes a list of instructions and checks whether these lead to the end of the maze. This approach is more suitable
+        for longer mazes.
+        :param user_directions: A list of tuples, each containing one number and one letter. The number corresponds to
+        how many cells to traverse this block, the character indicates the direction of travel (must be 'n', 'd', 'l',
+        or 'r'.
+        :return: True if the end of the maze is reached, otherwise False.
+        """
+        directions_full = []
+
+        for block in user_directions:
+            steps_in_block = block[0]
+            for step in range(steps_in_block):
+                directions_full.append(block[1])
+
+        return self.traverse_by_cells(directions_full)
+
 
     def __str__(self):
         top_edge = "+   +"
