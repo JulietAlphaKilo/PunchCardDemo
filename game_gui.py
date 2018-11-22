@@ -61,20 +61,20 @@ class MazeGraphic(QtWidgets.QWidget):
         maze_w = np.shape(self.maze.maze_map)[1]
 
         # Draw the uppermost boundary
-        painter.drawLine(base_x, base_y, base_x + (cell_size * maze_w), base_y)
+        painter.drawLine(base_x + cell_size, base_y, base_x + (cell_size * maze_w), base_y)
 
         # Iterate through maze data and draw walls as they appear
         for row in range(maze_h):
-            offset_y = row * cell_size
-            painter.drawLine(base_x, base_y + offset_y, base_x, base_y + offset_y + cell_size)
+            uppper_y = base_y + (row * cell_size)
+            lower_y = uppper_y + cell_size
+            painter.drawLine(base_x, uppper_y, base_x, lower_y)
             for col in range(maze_w):
-                offset_x = col * cell_size
+                left_x = base_x + (col * cell_size)
+                right_x = left_x + cell_size
                 if self.maze.maze_map[row][col] & self.maze.right == 0:
-                    painter.drawLine(base_x + offset_x + cell_size, base_y + offset_y, base_x + offset_x + cell_size, base_y + offset_y + cell_size)
+                    painter.drawLine(right_x, uppper_y, right_x, lower_y)
                 if self.maze.maze_map[row][col] & self.maze.down == 0:
-                    painter.drawLine(base_x + offset_x, base_y + offset_y + cell_size, base_x + offset_x + cell_size, base_y + offset_y + cell_size)
-
-
+                    painter.drawLine(left_x, lower_y, right_x, lower_y)
 
 
 if __name__ == "__main__":
