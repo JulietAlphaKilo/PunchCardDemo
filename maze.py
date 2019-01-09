@@ -6,6 +6,8 @@ import queue
 class Maze:
 
     def __init__(self, side_length=5, start_row=0, start_col=0):
+        #TODO remove seed after testing is complete
+        random.seed(42)
         self.start_row = start_row
         self.start_col = start_col
         # Initialise constants to represent each direction

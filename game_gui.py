@@ -8,17 +8,12 @@ import sys
 class MazeGameWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        self.game_maze = maze.Maze(side_length=10)
+        self.game_maze = maze.Maze()
         self.init_UI()
 
     def init_UI(self):
         self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
-        # self.layout.setAlignment(QtCore.Qt.AlignCenter)
-
-        # self.text = QtWidgets.QLabel(str(self.game_maze))
-        # self.text.setFont(QtGui.QFont('Consolas', 14))
-        # self.layout.addWidget(self.text, row=0, column=1, alignment=QtCore.Qt.AlignCenter)
 
         maze_graphic = MazeGraphic(self.game_maze)
         self.layout.addWidget(maze_graphic)
@@ -52,7 +47,7 @@ class MazeGraphic(QtWidgets.QWidget):
         self.draw_maze(painter)
 
     def draw_maze(self, painter):
-        MAX_WIDTH = 400
+        MAX_WIDTH = 600
         top_padding = 20
         cell_size = MAX_WIDTH / math.sqrt(np.size(self.maze.maze_map))
         base_x = (self.width()/2) - (MAX_WIDTH/2)
